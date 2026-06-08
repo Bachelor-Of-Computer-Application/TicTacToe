@@ -1,23 +1,52 @@
 #include "raylib.h"
+#include <stdio.h>
+#include <string.h>
+#include "game.h"
 
-int main()
+// ---------------- STATE ----------------
+int screen = 0;
+int loginError = 0;
+int showStats = 0;
+
+// ---------------- INPUT ----------------
+char username[50] = "";
+char password[50] = "";
+
+int usernameLen = 0;
+int passwordLen = 0;
+
+int typingUsername = 0;
+int typingPassword = 0;
+
+// ---------------- LOGIN ----------------
+int CheckLogin(char *u, char *p)
 {
-    InitWindow(800, 600, "TicTacToe");
+    FILE *f = fopen("users.txt", "r");
+    if (!f) return 0;
 
-    SetTargetFPS(60);
+    char fu[50], fp[50];
 
-    while (!WindowShouldClose())
+    while (fscanf(f, "%s %s", fu, fp) != EOF)
     {
-        BeginDrawing();
-
-        ClearBackground(RAYWHITE);
-
-        DrawText("My First C Game!", 220, 250, 40, BLACK);
-
-        EndDrawing();
+        if (strcmp(u, fu) == 0 && strcmp(p, fp) == 0)
+        {
+            fclose(f);
+            return 1;
+        }
     }
 
-    CloseWindow();
-
+    fclose(f);
     return 0;
 }
+
+// ---------------- SIGNUP ----------------
+void SaveUser(char *u, char *p)
+{
+    FILE *f = fopen("users.txt", "a");
+    if (f)
+    {
+        fprintf(f, "%s %s\n", u, p);
+        fclose(f);
+    }
+}
+
