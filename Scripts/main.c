@@ -49,4 +49,51 @@ void SaveUser(char *u, char *p)
         fclose(f);
     }
 }
+/ ---------------- MAIN ----------------
+int main()
+{
+    InitWindow(800, 600, "TicTacToe");
+    SetTargetFPS(60);
 
+    FILE *fcheck = fopen("users.txt", "r");
+    if (!fcheck)
+        screen = 1;
+    else
+    {
+        screen = 2;
+        fclose(fcheck);
+    }
+
+    InitGame();
+
+    while (!WindowShouldClose())
+    {
+        Vector2 m = GetMousePosition();
+
+        // ---------------- TEXT INPUT ----------------
+        int key = GetCharPressed();
+        while (key > 0)
+        {
+            if (typingUsername && usernameLen < 49)
+            {
+                username[usernameLen++] = (char)key;
+                username[usernameLen] = '\0';
+            }
+
+            if (typingPassword && passwordLen < 49)
+            {
+                password[passwordLen++] = (char)key;
+                password[passwordLen] = '\0';
+            }
+
+            key = GetCharPressed();
+        }
+
+        if (IsKeyPressed(KEY_BACKSPACE))
+        {
+            if (typingUsername && usernameLen > 0)
+                username[--usernameLen] = '\0';
+
+            if (typingPassword && passwordLen > 0)
+                password[--passwordLen] = '\0';
+        }
