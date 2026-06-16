@@ -230,3 +230,40 @@ int main()
             DrawRectangle(10, 10, 120, 40, DARKGRAY);
             DrawText("STATS", 35, 20, 20, WHITE);
 
+           // ================= STATS OVERLAY =================
+            if (showStats)
+            {
+                DrawRectangle(150, 80, 500, 420, Fade(BLACK, 0.85f));
+                DrawText("MATCH HISTORY", 280, 100, 25, WHITE);
+
+                FILE *f = fopen("stats.txt", "r");
+
+                if (f == NULL)
+                {
+                    DrawText("No stats available", 280, 200, 20, WHITE);
+                }
+                else
+                {
+                    char line[100];
+                    int y = 180;
+
+                    while (fgets(line, sizeof(line), f))
+                    {
+                        DrawText(line, 200, y, 20, WHITE);
+                        y += 30;
+                    }
+
+                    fclose(f);
+                }
+
+                DrawText("Click STATS again to close", 220, 500, 18, LIGHTGRAY);
+            }
+        }
+
+        EndDrawing();
+    }
+
+    CloseWindow();
+    return 0;
+}
+
