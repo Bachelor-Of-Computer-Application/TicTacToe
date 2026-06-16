@@ -21,6 +21,10 @@ void InitGame()
     gameOver = 0;
     winner = ' ';
 }
+void ResetGame()
+{
+    InitGame();
+}
 
 
 void ResetGame()
@@ -49,7 +53,6 @@ void SaveMatch(char w)
 
     fclose(f);
 }
-
 
 int CheckWin()
 {

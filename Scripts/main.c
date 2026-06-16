@@ -49,12 +49,19 @@ void SaveUser(char *u, char *p)
         fclose(f);
     }
 }
+/ ---------------- MAIN ----------------
+int main()
+{
+    InitWindow(800, 600, "TicTacToe");
+    SetTargetFPS(60);
+
 
 // ---------------- MAIN ----------------
 int main()
 {
     InitWindow(800, 600, "TicTacToe");
     SetTargetFPS(60);
+
 
     FILE *fcheck = fopen("users.txt", "r");
     if (!fcheck)
