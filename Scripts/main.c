@@ -146,4 +146,87 @@ int main()
                 }
             }
 
-            
+            / ================= LOGIN =================
+            if (screen == 2)
+            {
+                loginError = 0;
+
+                if (m.x >= 250 && m.x <= 550 &&
+                    m.y >= 200 && m.y <= 240)
+                    typingUsername = 1;
+
+                if (m.x >= 250 && m.x <= 550 &&
+                    m.y >= 260 && m.y <= 300)
+                    typingPassword = 1;
+
+                if (m.x >= 250 && m.x <= 550 &&
+                    m.y >= 340 && m.y <= 390)
+                {
+                    if (CheckLogin(username, password))
+                    {
+                        screen = 3;
+                        loginError = 0;
+                    }
+                    else
+                    {
+                        loginError = 1;
+                    }
+                }
+            }
+        }
+
+        // ---------------- DRAW ----------------
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+
+        // ================= SIGNUP =================
+        if (screen == 1)
+        {
+            DrawText("SIGN UP", 320, 120, 30, BLACK);
+
+            DrawRectangle(250, 200, 300, 40, LIGHTGRAY);
+            DrawText(username, 260, 210, 20, BLACK);
+
+            DrawRectangle(250, 260, 300, 40, LIGHTGRAY);
+
+            char hidden[50];
+            for (int i = 0; i < passwordLen; i++) hidden[i] = '*';
+            hidden[passwordLen] = '\0';
+
+            DrawText(hidden, 260, 270, 20, BLACK);
+
+            DrawRectangle(250, 340, 300, 50, GREEN);
+            DrawText("CREATE ACCOUNT", 270, 355, 20, BLACK);
+        }
+
+        // ================= LOGIN =================
+        else if (screen == 2)
+        {
+            DrawText("LOGIN", 340, 120, 30, BLACK);
+
+            DrawRectangle(250, 200, 300, 40, LIGHTGRAY);
+            DrawText(username, 260, 210, 20, BLACK);
+
+            DrawRectangle(250, 260, 300, 40, LIGHTGRAY);
+
+            char hidden[50];
+            for (int i = 0; i < passwordLen; i++) hidden[i] = '*';
+            hidden[passwordLen] = '\0';
+
+            DrawText(hidden, 260, 270, 20, BLACK);
+
+            DrawRectangle(250, 340, 300, 50, BLUE);
+            DrawText("LOGIN", 360, 355, 20, WHITE);
+
+            if (loginError)
+                DrawText("Wrong username/password", 220, 420, 20, RED);
+        }
+
+        // ================= GAME =================
+        else if (screen == 3)
+        {
+            DrawGame();
+
+            // STATS BUTTON
+            DrawRectangle(10, 10, 120, 40, DARKGRAY);
+            DrawText("STATS", 35, 20, 20, WHITE);
