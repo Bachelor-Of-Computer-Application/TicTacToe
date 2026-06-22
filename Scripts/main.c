@@ -145,7 +145,6 @@ int main()
                     screen = 2;
                 }
             }
-
             / ================= LOGIN =================
             if (screen == 2)
             {
@@ -267,3 +266,4 @@ int main()
     CloseWindow();
     return 0;
 }
+
