@@ -10,5 +10,6 @@ extern int gameOver;
 extern char winner;
 
 int CheckDraw();
+void GetMatchStats(int *xWins, int *oWins, int *draws);
 
 #endif
