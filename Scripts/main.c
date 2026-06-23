@@ -3,12 +3,12 @@
 #include <string.h>
 #include "game.h"
 
-// ---------------- STATE ----------------
+// STATE 
 int screen = 0;
 int loginError = 0;
 int showStats = 0;
 
-// ---------------- INPUT ----------------
+//  INPUT
 char username[50] = "";
 char password[50] = "";
 
@@ -18,7 +18,7 @@ int passwordLen = 0;
 int typingUsername = 0;
 int typingPassword = 0;
 
-// ---------------- LOGIN ----------------
+//  LOGIN
 int CheckLogin(char *u, char *p)
 {
     FILE *f = fopen("users.txt", "r");
@@ -26,7 +26,7 @@ int CheckLogin(char *u, char *p)
 
     char fu[50], fp[50];
 
-    while (fscanf(f, "%s %s", fu, fp) != EOF)
+    while (fscanf(f, "%49s %49s", fu, fp) != EOF)
     {
         if (strcmp(u, fu) == 0 && strcmp(p, fp) == 0)
         {
@@ -39,7 +39,7 @@ int CheckLogin(char *u, char *p)
     return 0;
 }
 
-// ---------------- SIGNUP ----------------
+//  SIGNUP
 void SaveUser(char *u, char *p)
 {
     FILE *f = fopen("users.txt", "a");
@@ -49,19 +49,12 @@ void SaveUser(char *u, char *p)
         fclose(f);
     }
 }
-/ ---------------- MAIN ----------------
+
+//  MAIN 
 int main()
 {
     InitWindow(800, 600, "TicTacToe");
     SetTargetFPS(60);
-
-
-// ---------------- MAIN ----------------
-int main()
-{
-    InitWindow(800, 600, "TicTacToe");
-    SetTargetFPS(60);
-
 
     FILE *fcheck = fopen("users.txt", "r");
     if (!fcheck)
@@ -78,20 +71,23 @@ int main()
     {
         Vector2 m = GetMousePosition();
 
-        // ---------------- TEXT INPUT ----------------
+        //  TEXT INPUT 
         int key = GetCharPressed();
         while (key > 0)
         {
-            if (typingUsername && usernameLen < 49)
+            if (key != ' ')
             {
-                username[usernameLen++] = (char)key;
-                username[usernameLen] = '\0';
-            }
+                if (typingUsername && usernameLen < 49)
+                {
+                    username[usernameLen++] = (char)key;
+                    username[usernameLen] = '\0';
+                }
 
-            if (typingPassword && passwordLen < 49)
-            {
-                password[passwordLen++] = (char)key;
-                password[passwordLen] = '\0';
+                if (typingPassword && passwordLen < 49)
+                {
+                    password[passwordLen++] = (char)key;
+                    password[passwordLen] = '\0';
+                }
             }
 
             key = GetCharPressed();
@@ -106,13 +102,13 @@ int main()
                 password[--passwordLen] = '\0';
         }
 
-        // ---------------- MOUSE ----------------
+        // MOUSE 
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
         {
             typingUsername = 0;
             typingPassword = 0;
 
-            // ================= GAME SCREEN =================
+            // GAME SCREEN 
             if (screen == 3)
             {
                 // STATS BUTTON CLICK
@@ -121,11 +117,13 @@ int main()
                 {
                     showStats = !showStats;
                 }
-
-                HandleGameClick(m.x, m.y);
+                else
+                {
+                    HandleGameClick(m.x, m.y);
+                }
             }
 
-            // ================= SIGNUP =================
+            // SIGNUP 
             if (screen == 1)
             {
                 loginError = 0;
@@ -145,7 +143,8 @@ int main()
                     screen = 2;
                 }
             }
-            / ================= LOGIN =================
+
+            //  LOGIN 
             if (screen == 2)
             {
                 loginError = 0;
@@ -174,11 +173,11 @@ int main()
             }
         }
 
-        // ---------------- DRAW ----------------
+        // DRAW 
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        // ================= SIGNUP =================
+        //  SIGNUP 
         if (screen == 1)
         {
             DrawText("SIGN UP", 320, 120, 30, BLACK);
@@ -198,7 +197,7 @@ int main()
             DrawText("CREATE ACCOUNT", 270, 355, 20, BLACK);
         }
 
-        // ================= LOGIN =================
+        // LOGIN 
         else if (screen == 2)
         {
             DrawText("LOGIN", 340, 120, 30, BLACK);
@@ -221,7 +220,7 @@ int main()
                 DrawText("Wrong username/password", 220, 420, 20, RED);
         }
 
-        // ================= GAME =================
+        // GAME 
         else if (screen == 3)
         {
             DrawGame();
@@ -230,11 +229,17 @@ int main()
             DrawRectangle(10, 10, 120, 40, DARKGRAY);
             DrawText("STATS", 35, 20, 20, WHITE);
 
-           // ================= STATS OVERLAY =================
+            //  STATS OVERLAY 
             if (showStats)
             {
                 DrawRectangle(150, 80, 500, 420, Fade(BLACK, 0.85f));
                 DrawText("MATCH HISTORY", 280, 100, 25, WHITE);
+
+                int xWins = 0, oWins = 0, draws = 0;
+                GetMatchStats(&xWins, &oWins, &draws);
+                char statsStr[100];
+                sprintf(statsStr, "Player X: %d  |  Player O: %d  |  Draws: %d", xWins, oWins, draws);
+                DrawText(statsStr, 200, 140, 20, YELLOW);
 
                 FILE *f = fopen("stats.txt", "r");
 
@@ -266,4 +271,3 @@ int main()
     CloseWindow();
     return 0;
 }
-
