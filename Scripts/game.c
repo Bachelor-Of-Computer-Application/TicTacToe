@@ -7,7 +7,6 @@ char board[3][3];
 int currentPlayer = 1;
 int gameOver = 0;
 char winner = ' ';
-
 int matchCount = 0;
 
 
@@ -20,10 +19,6 @@ void InitGame()
     currentPlayer = 1;
     gameOver = 0;
     winner = ' ';
-}
-void ResetGame()
-{
-    InitGame();
 }
 
 
@@ -53,6 +48,7 @@ void SaveMatch(char w)
 
     fclose(f);
 }
+
 
 int CheckWin()
 {
@@ -98,11 +94,11 @@ void HandleGameClick(int x, int y)
         return;
     }
 
-    int col = (x - 100) / 200;
-    int row = (y - 150) / 100;
-
-    if (col >= 0 && col < 3 && row >= 0 && row < 3)
+    if (x >= 100 && x < 700 && y >= 150 && y < 450)
     {
+        int col = (x - 100) / 200;
+        int row = (y - 150) / 100;
+
         if (board[row][col] == ' ')
         {
             board[row][col] = (currentPlayer == 1) ? 'X' : 'O';
@@ -129,9 +125,6 @@ void HandleGameClick(int x, int y)
 void DrawGame()
 {
     DrawText("TIC TAC TOE", 300, 40, 30, BLACK);
-
-    DrawRectangle(10, 10, 120, 40, DARKGRAY);
-    DrawText("STATS", 35, 20, 20, WHITE);
 
     DrawLine(300, 150, 300, 450, BLACK);
     DrawLine(500, 150, 500, 450, BLACK);
@@ -177,4 +170,33 @@ int CheckDraw()
                 return 0;
 
     return 1;
+}
+
+void GetMatchStats(int *xWins, int *oWins, int *draws)
+{
+    *xWins = 0;
+    *oWins = 0;
+    *draws = 0;
+
+    FILE *f = fopen("stats.txt", "r");
+    if (!f) return;
+
+    char line[100];
+    while (fgets(line, sizeof(line), f))
+    {
+        char *colon = strchr(line, ':');
+        if (colon != NULL)
+        {
+            // The result character is after the colon and space (e.g. ": X\n")
+            char outcome = *(colon + 2);
+            if (outcome == 'X')
+                (*xWins)++;
+            else if (outcome == 'O')
+                (*oWins)++;
+            else if (outcome == 'D')
+                (*draws)++;
+        }
+    }
+
+    fclose(f);
 }
