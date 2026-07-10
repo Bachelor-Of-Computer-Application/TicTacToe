@@ -1,4 +1,4 @@
-include "raylib.h"
+#include "raylib.h"
 #include <stdio.h>
 #include "game.h"
 #include <string.h>
@@ -170,4 +170,31 @@ int CheckDraw()
                 return 0;
 
     return 1;
+}
+
+void GetMatchStats(int *xWins, int *oWins, int *draws)
+{
+    *xWins = 0;
+    *oWins = 0;
+    *draws = 0;
+
+    FILE *f = fopen("stats.txt", "r");
+    if (!f) return;
+
+    char line[100];
+    while (fgets(line, sizeof(line), f))
+    {
+        int gameNum;
+        char winnerChar;
+        if (sscanf(line, "Game %d: %c", &gameNum, &winnerChar) == 2)
+        {
+            if (winnerChar == 'X')
+                (*xWins)++;
+            else if (winnerChar == 'O')
+                (*oWins)++;
+            else if (winnerChar == 'D')
+                (*draws)++;
+        }
+    }
+    fclose(f);
 }
